@@ -803,9 +803,7 @@
     </div>
 
     <script>
-        // JavaScript code will go here
-// You'll need to implement the game logic with JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function() {
     // Game state variables
     let gameState = {
         playerScore: 0,
@@ -1078,16 +1076,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function checkInningsEnd() {
-        const inningsOver = (gameState.ballsPlaying >= gameState.totalBalls) || 
+        // Fix: Changed from const to let to allow reassignment
+        let inningsOver = (gameState.ballsPlaying >= gameState.totalBalls) || 
                             (gameState.playerBatting && gameState.playerWickets > 0) || 
                             (!gameState.playerBatting && gameState.computerWickets > 0);
         
         // Check if target is achieved in second innings
         if (gameState.currentInnings === 2) {
-            if (gameState.playerBatting && gameState.playerScore > gameState.target) {
+            // Fix: Changed to >= to include exact target achievement
+            if (gameState.playerBatting && gameState.playerScore >= gameState.target) {
                 inningsOver = true;
                 endGame('player');
-            } else if (!gameState.playerBatting && gameState.computerScore > gameState.target) {
+            } else if (!gameState.playerBatting && gameState.computerScore >= gameState.target) {
                 inningsOver = true;
                 endGame('computer');
             }
@@ -1111,6 +1111,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameStatus.textContent = `Innings complete! Target for second innings: ${gameState.target} runs`;
             } else {
                 // Game over
+                // Fix: If we reach here without a specific winner, determine based on current scores
                 endGame();
             }
         }
@@ -1159,7 +1160,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (winnerByTarget) {
             winner = winnerByTarget;
+        } else if (gameState.currentInnings === 2) {
+            // Fix: Better second innings conclusion logic
+            if (gameState.playerBatting) {
+                // Player was batting in 2nd innings
+                if (gameState.playerScore >= gameState.target) {
+                    winner = 'player';
+                } else {
+                    winner = 'computer';
+                }
+            } else {
+                // Computer was batting in 2nd innings
+                if (gameState.computerScore >= gameState.target) {
+                    winner = 'computer';
+                } else {
+                    winner = 'player';
+                }
+            }
         } else {
+            // First innings comparison (shouldn't normally happen)
             if (gameState.playerScore > gameState.computerScore) {
                 winner = 'player';
             } else if (gameState.computerScore > gameState.playerScore) {
@@ -1176,15 +1195,34 @@ document.addEventListener('DOMContentLoaded', function() {
         finalPlayerScore.textContent = gameState.playerScore;
         finalComputerScore.textContent = gameState.computerScore;
         
+        // Fix: Added more detailed win/loss messages
         if (winner === 'player') {
             finalResult.textContent = 'You Won!';
             finalResult.classList.remove('lose');
-            gameSummary.textContent = `Congratulations! You defeated the computer by ${gameState.playerScore - gameState.computerScore} runs.`;
+            
+            // Different message based on innings
+            if (gameState.currentInnings === 2 && gameState.playerBatting) {
+                gameSummary.textContent = `Congratulations! You chased down the target of ${gameState.target} runs.`;
+            } else if (gameState.currentInnings === 2 && !gameState.playerBatting) {
+                gameSummary.textContent = `Congratulations! You successfully defended your score of ${gameState.playerScore} runs.`;
+            } else {
+                gameSummary.textContent = `Congratulations! You defeated the computer by ${gameState.playerScore - gameState.computerScore} runs.`;
+            }
+            
             showNotification('Victory! You won the match!', 'info');
         } else if (winner === 'computer') {
             finalResult.textContent = 'Computer Won!';
             finalResult.classList.add('lose');
-            gameSummary.textContent = `The computer defeated you by ${gameState.computerScore - gameState.playerScore} runs.`;
+            
+            // Different message based on innings
+            if (gameState.currentInnings === 2 && !gameState.playerBatting) {
+                gameSummary.textContent = `The computer chased down the target of ${gameState.target} runs.`;
+            } else if (gameState.currentInnings === 2 && gameState.playerBatting) {
+                gameSummary.textContent = `You couldn't reach the target of ${gameState.target} runs.`;
+            } else {
+                gameSummary.textContent = `The computer defeated you by ${gameState.computerScore - gameState.playerScore} runs.`;
+            }
+            
             showNotification('You lost the match!', 'danger');
         } else {
             finalResult.textContent = "It's a Tie!";
@@ -1278,4 +1316,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize background elements
     addBackgroundElements();
 });
+        
  </script>
