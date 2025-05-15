@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Cricket Championship</title>
+    <style>
+        :root {
+            --primary-color: #1a3a4a;
+            --secondary-color: #2e8b57;
+            --accent-color: #e74c3c;
+            --bg-color: #f5f5f5;
+            --text-color: #2c3e50;
+            --button-hover: #219653;
+            --highlight-color: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('https://cdnjs.cloudflare.com/ajax/libs/placeholders/2.0.0/placeholders.min.js');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/api/placeholder/1200/800');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .game-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .game-title::after {
+            content: "🏏";
+            font-size: 26px;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h1 {
+            font-size: 36px;
+            letter-spacing: 1px;
+        }
+
+        h2, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0px);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-number {
+            width: 60px;
+            height: 60px;
+            margin: 8px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-number::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-number:hover::before {
+            opacity: 1;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+        }
+
+        .scoreboard::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+        }
+
+        .score-section {
+            text-align: center;
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .score-section h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .score-section p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .score-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .game-area {
+            width: 100%;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 2px solid #e0e0e0;
+        }
+
+        .choice-area {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .game-status {
+            margin: 20px 0;
+            font-size: 20px;
+            font-weight: bold;
+            min-height: 60px;
+            color: var(--primary-color);
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            border: 2px solid #e0e0e0;
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin: 20px 0 10px;
+            font-size: 20px;
+        }
+
+        .modal-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .close-modal:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            z-index: 1000;
+            animation: fadeOut 2s ease-in-out forwards;
+            animation-delay: 1.5s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .notification.danger {
+            background-color: rgba(231, 76, 60, 0.9);
+        }
+
+        .notification.info {
+            background-color: rgba(52, 152, 219, 0.9);
+        }
+
+        @keyframes fadeOut {
+            from {opacity: 1; transform: translate(-50%, 0);}
+            to {opacity: 0; transform: translate(-50%, -20px);}
+        }
+
+        .result-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 20px 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .result-display.lose {
+            color: var(--accent-color);
+        }
+
+        .hand-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .hand {
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .hand h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .hand-value {
+            font-size: 40px;
+            margin: 10px 0;
+            background-color: white;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            margin: 10px auto;
+            border: 3px solid var(--primary-color);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .hand-value::before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 60%);
+            z-index: 0;
+        }
+
+        .hand-value span {
+            position: relative;
+            z-index: 1;
+        }
+
+        #landing-page {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            border: 2px solid #e0e0e0;
+        }
+
+        #landing-page::before {
+            content: "🏏";
+            font-size: 60px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .toss-area {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            border: 2px solid #e0e0e0;
+        }
+
+        .toss-area p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        #game-over {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #e0e0e0;
+        }
+
+        .cricket-icon {
+            position: absolute;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .cricket-ball {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 30% 30%, #e74c3c, #c0392b);
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .cricket-bat {
+            width: 20px;
+            height: 120px;
+            background: linear-gradient(to right, #d35400, #e67e22);
+            position: absolute;
+            border-radius: 5px;
+        }
+
+        .highlight {
+            animation: highlight 1s ease-in-out;
+        }
+
+        @keyframes highlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0));
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+
+        .choice-btn:hover::after {
+            transform: translateY(0);
+        }
+
+        .innings-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .target-badge {
+            background-color: var(--highlight-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .action-guide {
+            color: #777;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        #action-guide::before {
+            content: "👉 ";
+        }
+
+        @media (max-width: 600px) {
+            .scoreboard {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-number {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+                margin: 5px;
+            }
+
+            .hand-value {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            .game-title {
+                font-size: 24px;
+            }
+
+            .result-display {
+                font-size: 28px;
+            }
+        }
+
+        .cricket-field {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            border: 5px solid #4CAF50;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .cricket-pitch {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 400px;
+            background-color: #e67e22;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .cricket-stumps {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(90deg, #bdc3c7 10%, #ecf0f1 50%, #bdc3c7 90%);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .trophy-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: inline-block;
+            color: var(--highlight-color);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="cricket-field"></div>
+    <div class="cricket-pitch"></div>
+    <div class="cricket-stumps" style="top: 20%; left: 50%; transform: translate(-50%, 0);"></div>
+    <div class="cricket-stumps" style="bottom: 20%; left: 50%; transform: translate(-50%, 0);"></div>
+    
+    <div class="container">
+        <div class="game-title">
+            <h1>Hand Cricket Championship</h1>
+        </div>
+        
+        <!-- Landing Page -->
+        <div id="landing-page">
+            <h2>Welcome to the Cricket Arena!</h2>
+            <p>Show your batting and bowling skills in this classic hand cricket game</p>
+            <div class="choice-area">
+                <button id="start-btn" class="btn pulse">Start Match</button>
+                <button id="instructions-btn" class="btn">How to Play</button>
+            </div>
+        </div>
+
+        <!-- Instructions Modal -->
+        <div id="instructions-modal" class="modal hidden">
+            <div class="modal-content">
+                <button class="close-modal">&times;</button>
+                <h2>How to Play Hand Cricket</h2>
+                <h3>Game Flow:</h3>
+                <ul>
+                    <li>The game starts with a toss, followed by two innings.</li>
+                    <li>Each innings consists of 1 over (6 balls) or ends when all wickets are down.</li>
+                    <li>The team with the highest score after both innings wins!</li>
+                </ul>
+                
+                <h3>Toss:</h3>
+                <ul>
+                    <li>Choose Odd or Even</li>
+                    <li>Both you and computer select a number (1-6)</li>
+                    <li>If the sum matches your choice (Odd or Even), you win the toss</li>
+                    <li>Toss winner gets to choose whether to bat or bowl first</li>
+                </ul>
+                
+                <h3>Batting:</h3>
+                <ul>
+                    <li>Select a number from 1 to 6 for each ball</li>
+                    <li>If your number is different from the computer's, you score runs equal to your number</li>
+                    <li>If both numbers are the same, you're out (wicket)!</li>
+                </ul>
+                
+                <h3>Bowling:</h3>
+                <ul>
+                    <li>When computer is batting, you bowl by selecting a number (1-6)</li>
+                    <li>If computer's number matches yours, it's out!</li>
+                    <li>If different, computer scores runs equal to its number</li>
+                </ul>
+                
+                <button id="start-from-instructions" class="btn">Start Playing</button>
+            </div>
+        </div>
+
+        <!-- Toss Area -->
+        <div id="toss-area" class="toss-area hidden">
+            <h2>Time for the Toss!</h2>
+            <p>Choose Odd or Even:</p>
+            <div class="button-group">
+                <button id="odd-btn" class="btn choice-btn">Odd</button>
+                <button id="even-btn" class="btn choice-btn">Even</button>
+            </div>
+
+            <div id="toss-result" class="hidden">
+                <div class="hand-display">
+                    <div class="hand">
+                        <h3>You</h3>
+                        <div id="player-toss" class="hand-value"><span>?</span></div>
+                    </div>
+                    <div class="hand">
+                        <h3>Computer</h3>
+                        <div id="computer-toss" class="hand-value"><span>?</span></div>
+                    </div>
+                </div>
+                <p id="toss-status"></p>
+                <div id="bat-bowl-choice" class="hidden">
+                    <p>You won the toss! Choose to:</p>
+                    <div class="button-group">
+                        <button id="bat-btn" class="btn choice-btn">Bat First</button>
+                        <button id="bowl-btn" class="btn choice-btn">Bowl First</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="toss-numbers" class="hidden">
+                <p>Choose a number (1-6):</p>
+                <div class="choice-area">
+                    <button class="btn btn-number toss-number" data-value="1">1</button>
+                    <button class="btn btn-number toss-number" data-value="2">2</button>
+                    <button class="btn btn-number toss-number" data-value="3">3</button>
+                    <button class="btn btn-number toss-number" data-value="4">4</button>
+                    <button class="btn btn-number toss-number" data-value="5">5</button>
+                    <button class="btn btn-number toss-number" data-value="6">6</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="game-area" class="game-area hidden">
+            <div id="innings-info">
+                <span id="innings-badge" class="innings-badge">1st Innings</span>
+                <span id="target-badge" class="target-badge hidden">Target: 0</span>
+            </div>
+            
+            <div class="scoreboard">
+                <div class="score-section">
+                    <h3>Player</h3>
+                    <div class="score-value" id="player-score">0</div>
+                    <p>Wickets: <span id="player-wickets">0</span>/1</p>
+                </div>
+                <div class="score-section">
+                    <h3>Computer</h3>
+                    <div class="score-value" id="computer-score">0</div>
+                    <p>Wickets: <span id="computer-wickets">0</span>/1</p>
+                </div>
+                <div class="score-section">
+                    <h3>Balls</h3>
+                    <div class="score-value" id="balls-count">0</div>
+                    <p>Remaining: <span id="balls-remaining">6</span></p>
+                </div>
+            </div>
+
+            <p id="action-guide" class="action-guide">Choose a number to play</p>
+
+            <div class="hand-display">
+                <div class="hand">
+                    <h3>You</h3>
+                    <div id="player-hand" class="hand-value"><span>?</span></div>
+                </div>
+                <div class="hand">
+                    <h3>Computer</h3>
+                    <div id="computer-hand" class="hand-value"><span>?</span></div>
+                </div>
+            </div>
+
+            <div id="game-status" class="game-status"></div>
+
+            <div class="choice-area">
+                <button class="btn btn-number play-number" data-value="1">1</button>
+                <button class="btn btn-number play-number" data-value="2">2</button>
+                <button class="btn btn-number play-number" data-value="3">3</button>
+                <button class="btn btn-number play-number" data-value="4">4</button>
+                <button class="btn btn-number play-number" data-value="5">5</button>
+                <button class="btn btn-number play-number" data-value="6">6</button>
+            </div>
+
+            <button id="next-innings-btn" class="btn hidden">Next Innings</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over" class="hidden">
+            <span class="trophy-icon">🏆</span>
+            <h2>Match Complete!</h2>
+            <div id="final-result" class="result-display">You Won!</div>
+            <p id="game-summary"></p>
+            <div class="scoreboard">
+                <div class="score-section">
+                    <h3>Your Score</h3>
+                    <div class="score-value" id="final-player-score">0</div>
+                </div>
+                <div class="score-section">
+                    <h3>Computer Score</h3>
+                    <div class="score-value" id="final-computer-score">0</div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="play-again-btn" class="btn">Play Again</button>
+                <button id="share-btn" class="btn">Share Result</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript code will go here
+// You'll need to implement the game logic with JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Game state variables
+    let gameState = {
+        playerScore: 0,
+        computerScore: 0,
+        playerWickets: 0,
+        computerWickets: 0,
+        ballsPlaying: 0,
+        totalBalls: 6,
+        currentInnings: 1,
+        playerBatting: false,
+        tossChoice: '',
+        tossWinner: '',
+        playerTossNumber: 0,
+        computerTossNumber: 0,
+        playerHandValue: 0,
+        computerHandValue: 0,
+        target: 0
+    };
+
+    // DOM Elements
+    const landingPage = document.getElementById('landing-page');
+    const instructionsModal = document.getElementById('instructions-modal');
+    const tossArea = document.getElementById('toss-area');
+    const tossResult = document.getElementById('toss-result');
+    const tossNumbers = document.getElementById('toss-numbers');
+    const batBowlChoice = document.getElementById('bat-bowl-choice');
+    const gameArea = document.getElementById('game-area');
+    const gameOver = document.getElementById('game-over');
+    const inningsBadge = document.getElementById('innings-badge');
+    const targetBadge = document.getElementById('target-badge');
+    const playerScore = document.getElementById('player-score');
+    const computerScore = document.getElementById('computer-score');
+    const playerWickets = document.getElementById('player-wickets');
+    const computerWickets = document.getElementById('computer-wickets');
+    const ballsCount = document.getElementById('balls-count');
+    const ballsRemaining = document.getElementById('balls-remaining');
+    const playerHand = document.getElementById('player-hand');
+    const computerHand = document.getElementById('computer-hand');
+    const gameStatus = document.getElementById('game-status');
+    const actionGuide = document.getElementById('action-guide');
+    const nextInningsBtn = document.getElementById('next-innings-btn');
+    const finalResult = document.getElementById('final-result');
+    const gameSummary = document.getElementById('game-summary');
+    const finalPlayerScore = document.getElementById('final-player-score');
+    const finalComputerScore = document.getElementById('final-computer-score');
+
+    // Buttons
+    const startBtn = document.getElementById('start-btn');
+    const instructionsBtn = document.getElementById('instructions-btn');
+    const startFromInstructionsBtn = document.getElementById('start-from-instructions');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const oddBtn = document.getElementById('odd-btn');
+    const evenBtn = document.getElementById('even-btn');
+    const batBtn = document.getElementById('bat-btn');
+    const bowlBtn = document.getElementById('bowl-btn');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    const shareBtn = document.getElementById('share-btn');
+
+    // Event Listeners
+    startBtn.addEventListener('click', startGame);
+    instructionsBtn.addEventListener('click', showInstructions);
+    startFromInstructionsBtn.addEventListener('click', startGameFromInstructions);
+    closeModalBtn.addEventListener('click', closeInstructions);
+    oddBtn.addEventListener('click', () => selectTossChoice('odd'));
+    evenBtn.addEventListener('click', () => selectTossChoice('even'));
+    batBtn.addEventListener('click', () => chooseBatOrBowl('bat'));
+    bowlBtn.addEventListener('click', () => chooseBatOrBowl('bowl'));
+    nextInningsBtn.addEventListener('click', startSecondInnings);
+    playAgainBtn.addEventListener('click', resetGame);
+    shareBtn.addEventListener('click', shareResult);
+
+    // Add event listeners for toss number buttons
+    document.querySelectorAll('.toss-number').forEach(button => {
+        button.addEventListener('click', () => selectTossNumber(parseInt(button.dataset.value)));
+    });
+
+    // Add event listeners for gameplay number buttons
+    document.querySelectorAll('.play-number').forEach(button => {
+        button.addEventListener('click', () => playNumber(parseInt(button.dataset.value)));
+    });
+
+    // Game Functions
+    function startGame() {
+        landingPage.classList.add('hidden');
+        tossArea.classList.remove('hidden');
+        resetGameState();
+    }
+
+    function startGameFromInstructions() {
+        instructionsModal.classList.add('hidden');
+        landingPage.classList.add('hidden');
+        tossArea.classList.remove('hidden');
+        resetGameState();
+    }
+
+    function showInstructions() {
+        instructionsModal.classList.remove('hidden');
+    }
+
+    function closeInstructions() {
+        instructionsModal.classList.add('hidden');
+    }
+
+    function resetGameState() {
+        gameState = {
+            playerScore: 0,
+            computerScore: 0,
+            playerWickets: 0,
+            computerWickets: 0,
+            ballsPlaying: 0,
+            totalBalls: 6,
+            currentInnings: 1,
+            playerBatting: false,
+            tossChoice: '',
+            tossWinner: '',
+            playerTossNumber: 0,
+            computerTossNumber: 0,
+            playerHandValue: 0,
+            computerHandValue: 0,
+            target: 0
+        };
+
+        // Reset UI elements
+        playerScore.textContent = '0';
+        computerScore.textContent = '0';
+        playerWickets.textContent = '0';
+        computerWickets.textContent = '0';
+        ballsCount.textContent = '0';
+        ballsRemaining.textContent = '6';
+        playerHand.innerHTML = '<span>?</span>';
+        computerHand.innerHTML = '<span>?</span>';
+        gameStatus.textContent = '';
+        inningsBadge.textContent = '1st Innings';
+        targetBadge.classList.add('hidden');
+        actionGuide.textContent = 'Choose a number to play';
+        
+        // Reset display
+        tossResult.classList.add('hidden');
+        tossNumbers.classList.add('hidden');
+        batBowlChoice.classList.add('hidden');
+        nextInningsBtn.classList.add('hidden');
+    }
+
+    function selectTossChoice(choice) {
+        gameState.tossChoice = choice;
+        oddBtn.disabled = true;
+        evenBtn.disabled = true;
+        showNotification(`You chose: ${choice.toUpperCase()}`, 'info');
+        
+        // Show toss number selection
+        tossNumbers.classList.remove('hidden');
+    }
+
+    function selectTossNumber(number) {
+        gameState.playerTossNumber = number;
+        gameState.computerTossNumber = getRandomNumber(1, 6);
+        
+        // Update UI
+        document.getElementById('player-toss').innerHTML = `<span>${gameState.playerTossNumber}</span>`;
+        document.getElementById('computer-toss').innerHTML = `<span>${gameState.computerTossNumber}</span>`;
+        
+        // Determine toss result
+        const sum = gameState.playerTossNumber + gameState.computerTossNumber;
+        const isOdd = sum % 2 !== 0;
+        
+        if ((isOdd && gameState.tossChoice === 'odd') || (!isOdd && gameState.tossChoice === 'even')) {
+            gameState.tossWinner = 'player';
+            document.getElementById('toss-status').textContent = 'You won the toss!';
+            showNotification('You won the toss!', 'info');
+            batBowlChoice.classList.remove('hidden');
+        } else {
+            gameState.tossWinner = 'computer';
+            const computerChoice = Math.random() < 0.5 ? 'bat' : 'bowl';
+            chooseBatOrBowl(computerChoice, true);
+            document.getElementById('toss-status').textContent = `Computer won the toss and chose to ${computerChoice} first!`;
+            showNotification('Computer won the toss', 'info');
+        }
+        
+        // Show toss result
+        tossNumbers.classList.add('hidden');
+        tossResult.classList.remove('hidden');
+    }
+
+    function chooseBatOrBowl(choice, isComputerChoice = false) {
+        if (choice === 'bat') {
+            gameState.playerBatting = true;
+            showNotification(isComputerChoice ? 'Computer chose to bowl first' : 'You chose to bat first', 'info');
+        } else {
+            gameState.playerBatting = false;
+            showNotification(isComputerChoice ? 'Computer chose to bat first' : 'You chose to bowl first', 'info');
+        }
+        
+        // Start the game
+        tossArea.classList.add('hidden');
+        gameArea.classList.remove('hidden');
+        updateActionGuide();
+    }
+
+    function playNumber(number) {
+        gameState.playerHandValue = number;
+        gameState.computerHandValue = getRandomNumber(1, 6);
+        
+        // Update UI
+        playerHand.innerHTML = `<span>${gameState.playerHandValue}</span>`;
+        computerHand.innerHTML = `<span>${gameState.computerHandValue}</span>`;
+        
+        // Highlight the hands
+        playerHand.classList.add('highlight');
+        computerHand.classList.add('highlight');
+        
+        // Remove highlight after animation
+        setTimeout(() => {
+            playerHand.classList.remove('highlight');
+            computerHand.classList.remove('highlight');
+        }, 1000);
+        
+        // Process the play result
+        processPlayResult();
+    }
+
+    function processPlayResult() {
+        gameState.ballsPlaying++;
+        ballsCount.textContent = gameState.ballsPlaying;
+        ballsRemaining.textContent = gameState.totalBalls - gameState.ballsPlaying;
+        
+        // Check if it's a wicket or runs
+        if (gameState.playerHandValue === gameState.computerHandValue) {
+            // It's a wicket!
+            if (gameState.playerBatting) {
+                gameState.playerWickets++;
+                playerWickets.textContent = gameState.playerWickets;
+                gameStatus.textContent = "OUT! It's a wicket!";
+                showNotification('OUT! You lost your wicket!', 'danger');
+            } else {
+                gameState.computerWickets++;
+                computerWickets.textContent = gameState.computerWickets;
+                gameStatus.textContent = "OUT! You got the computer's wicket!";
+                showNotification('OUT! Computer lost its wicket!', 'info');
+            }
+        } else {
+            // Runs scored
+            if (gameState.playerBatting) {
+                gameState.playerScore += gameState.playerHandValue;
+                playerScore.textContent = gameState.playerScore;
+                gameStatus.textContent = `You scored ${gameState.playerHandValue} runs!`;
+                
+                // Show special notification for boundaries
+                if (gameState.playerHandValue === 4) {
+                    showNotification('FOUR! Nice shot!', 'info');
+                } else if (gameState.playerHandValue === 6) {
+                    showNotification('SIX! That\'s huge!', 'info');
+                }
+            } else {
+                gameState.computerScore += gameState.computerHandValue;
+                computerScore.textContent = gameState.computerScore;
+                gameStatus.textContent = `Computer scored ${gameState.computerHandValue} runs!`;
+                
+                // Show special notification for boundaries
+                if (gameState.computerHandValue === 4) {
+                    showNotification('FOUR! Computer hit a boundary!', 'danger');
+                } else if (gameState.computerHandValue === 6) {
+                    showNotification('SIX! Computer hit it big!', 'danger');
+                }
+            }
+        }
+        
+        // Check if innings should end
+        checkInningsEnd();
+        updateActionGuide();
+    }
+
+    function checkInningsEnd() {
+        const inningsOver = (gameState.ballsPlaying >= gameState.totalBalls) || 
+                            (gameState.playerBatting && gameState.playerWickets > 0) || 
+                            (!gameState.playerBatting && gameState.computerWickets > 0);
+        
+        // Check if target is achieved in second innings
+        if (gameState.currentInnings === 2) {
+            if (gameState.playerBatting && gameState.playerScore > gameState.target) {
+                inningsOver = true;
+                endGame('player');
+            } else if (!gameState.playerBatting && gameState.computerScore > gameState.target) {
+                inningsOver = true;
+                endGame('computer');
+            }
+        }
+        
+        if (inningsOver) {
+            if (gameState.currentInnings === 1) {
+                // First innings over, show next innings button
+                nextInningsBtn.classList.remove('hidden');
+                document.querySelectorAll('.play-number').forEach(button => {
+                    button.disabled = true;
+                });
+                
+                // Set target for second innings
+                if (gameState.playerBatting) {
+                    gameState.target = gameState.playerScore + 1;
+                } else {
+                    gameState.target = gameState.computerScore + 1;
+                }
+                
+                gameStatus.textContent = `Innings complete! Target for second innings: ${gameState.target} runs`;
+            } else {
+                // Game over
+                endGame();
+            }
+        }
+    }
+
+    function startSecondInnings() {
+        // Reset innings specific state
+        gameState.currentInnings = 2;
+        gameState.ballsPlaying = 0;
+        gameState.playerBatting = !gameState.playerBatting;
+        
+        // Reset wickets for second innings
+        gameState.playerWickets = 0;
+        gameState.computerWickets = 0;
+        
+        // Update UI
+        inningsBadge.textContent = '2nd Innings';
+        targetBadge.textContent = `Target: ${gameState.target}`;
+        targetBadge.classList.remove('hidden');
+        
+        ballsCount.textContent = '0';
+        ballsRemaining.textContent = gameState.totalBalls;
+        playerWickets.textContent = '0';
+        computerWickets.textContent = '0';
+        
+        playerHand.innerHTML = '<span>?</span>';
+        computerHand.innerHTML = '<span>?</span>';
+        
+        // Hide next innings button
+        nextInningsBtn.classList.add('hidden');
+        
+        // Enable number buttons again
+        document.querySelectorAll('.play-number').forEach(button => {
+            button.disabled = false;
+        });
+        
+        // Update action guide
+        updateActionGuide();
+        
+        showNotification('Second Innings has started!', 'info');
+    }
+
+    function endGame(winnerByTarget = null) {
+        // Determine winner
+        let winner;
+        
+        if (winnerByTarget) {
+            winner = winnerByTarget;
+        } else {
+            if (gameState.playerScore > gameState.computerScore) {
+                winner = 'player';
+            } else if (gameState.computerScore > gameState.playerScore) {
+                winner = 'computer';
+            } else {
+                winner = 'tie';
+            }
+        }
+        
+        // Update UI
+        gameArea.classList.add('hidden');
+        gameOver.classList.remove('hidden');
+        
+        finalPlayerScore.textContent = gameState.playerScore;
+        finalComputerScore.textContent = gameState.computerScore;
+        
+        if (winner === 'player') {
+            finalResult.textContent = 'You Won!';
+            finalResult.classList.remove('lose');
+            gameSummary.textContent = `Congratulations! You defeated the computer by ${gameState.playerScore - gameState.computerScore} runs.`;
+            showNotification('Victory! You won the match!', 'info');
+        } else if (winner === 'computer') {
+            finalResult.textContent = 'Computer Won!';
+            finalResult.classList.add('lose');
+            gameSummary.textContent = `The computer defeated you by ${gameState.computerScore - gameState.playerScore} runs.`;
+            showNotification('You lost the match!', 'danger');
+        } else {
+            finalResult.textContent = "It's a Tie!";
+            finalResult.classList.remove('lose');
+            gameSummary.textContent = "What a match! It ended in a tie.";
+            showNotification("It's a tie!", 'info');
+        }
+    }
+
+    // Helper Functions
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after animation completes
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3500);
+    }
+
+    function updateActionGuide() {
+        if (gameState.playerBatting) {
+            actionGuide.textContent = 'Choose a number to bat';
+        } else {
+            actionGuide.textContent = 'Choose a number to bowl';
+        }
+    }
+
+    function resetGame() {
+        gameOver.classList.add('hidden');
+        landingPage.classList.remove('hidden');
+    }
+
+    function shareResult() {
+        const resultText = `I just ${finalResult.textContent === 'You Won!' ? 'won' : 'played'} a Hand Cricket match with ${gameState.playerScore}-${gameState.computerScore} score!`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'Hand Cricket Championship',
+                text: resultText,
+                url: window.location.href
+            })
+            .catch(error => {
+                console.error('Error sharing:', error);
+                showNotification('Could not share result', 'danger');
+            });
+        } else {
+            // Fallback - copy to clipboard
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    showNotification('Result copied to clipboard!', 'info');
+                })
+                .catch(err => {
+                    console.error('Could not copy text: ', err);
+                    showNotification('Could not copy result', 'danger');
+                });
+        }
+    }
+
+    // Add some visual effects - cricket balls and bats in the background
+    function addBackgroundElements() {
+        const container = document.querySelector('.container');
+        
+        // Add cricket balls
+        for (let i = 0; i < 5; i++) {
+            const ball = document.createElement('div');
+            ball.className = 'cricket-icon cricket-ball';
+            ball.style.left = `${Math.random() * 90}%`;
+            ball.style.top = `${Math.random() * 90}%`;
+            container.appendChild(ball);
+        }
+        
+        // Add cricket bats
+        for (let i = 0; i < 3; i++) {
+            const bat = document.createElement('div');
+            bat.className = 'cricket-icon cricket-bat';
+            bat.style.left = `${Math.random() * 90}%`;
+            bat.style.top = `${Math.random() * 90}%`;
+            bat.style.transform = `rotate(${Math.random() * 360}deg)`;
+            container.appendChild(bat);
+        }
+    }
+    
+    // Initialize background elements
+    addBackgroundElements();
+});
+ </script>
